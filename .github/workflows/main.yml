@@ -1,0 +1,71 @@
+#    ------------------------------------------------------------------------------------------------------------------------------------------------
+#    This workflow will build code on a VPS, when there is a push to the "master" branch.
+#    Script by Lars van der Willik <Owkey>
+#    ------------------------------------------------------------------------------------------------------------------------------------------------
+#
+#    To use this workflow, you will need to complete the following set-up steps:
+#
+#    1. Make sure the following secret VARIABLES are added to your repo and name your workflow
+#       ${{ secrets.HOST }}
+#       ${{ secrets.USERNAME }}
+#       ${{ secrets.SSH_PRIVATE_KEY }}
+
+name: Deploy jar to production
+
+#    2.Adjust the env VARIABLES below
+#       PUBLIC_PATH
+#       BUILD_PATH
+#       BUILD_REPO
+
+env:
+  PUBLIC_PATH: "/var/www/discord/bot/"                               # set this to the path from where you will enter the server by SSH
+  BUILD_PATH: "/var/www/discord/bot/"              # set this to the path from where you will enter the server by SSH
+  BUILD_REPO: "discord-bot"                                                  # set this to the name/slug of your desired REPO
+
+#    3.Enter the branch that triggers the action/ workflow
+
+on:
+  push:
+    branches: [ main ]
+
+#    4.Push your branch and check your action workflow status on your GitHub account
+#
+#    ------------------------------------------------------------------------------------------------------------------------------------------------
+#    NOTE: There is no need to change any of the script below
+#    ------------------------------------------------------------------------------------------------------------------------------------------------
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy code to production 🚀
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ${{ env.PUBLIC_PATH }}
+            FILE=botproject.jar
+            if [ -f "$FILE" ]; then
+            rm "$FILE"
+            else
+            echo It's already gone :O
+            fi
+            rm -rf ${{ env.BUILD_REPO }}
+            echo Old code removed - ready to deploy...
+            git clone git@github.com:Sanderei/${{ env.BUILD_REPO }}.git --config core.sshCommand="ssh -i ~/.ssh/discord-bot"
+
+      - name: Cleanup directory 🧹
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ${{ env.BUILD_PATH }} && cd ${{ env.BUILD_REPO }}
+            rm -rf .git && rm -rf .github && rm -rf .gitignore
