@@ -57,7 +57,13 @@ jobs:
             fi
             rm -rf ${{ env.BUILD_REPO }}
             echo "Old code removed - ready to deploy..."
-            git clone git@github.com:Sanderei/${{ env.BUILD_REPO }}.git --config core.sshCommand="ssh -i ~/.ssh/discord-bot"
+            git clone git@github.com:Sanderei/${{ env.BUILD_REPO }}.git"
+            mv discord-bot/botproject.jar botproject.jar
+            docker stop discord-bot
+            docker container rm discord-bot
+            docker image build -t projects.nickmous.com/discord-bot .
+            docker container create --name discord-bot projects.nickmous.com/discord-bot
+            docker start discord-bot
 
       - name: Cleanup directory 🧹
         uses: appleboy/ssh-action@master
