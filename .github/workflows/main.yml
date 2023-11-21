@@ -51,12 +51,12 @@ jobs:
             cd ${{ env.PUBLIC_PATH }}
             FILE=botproject.jar
             if [ -f "$FILE" ]; then
-            rm "$FILE"
+            rm "$FILE";
             else
-            echo It's already gone :O
+            echo "It's already gone :O";
             fi
             rm -rf ${{ env.BUILD_REPO }}
-            echo Old code removed - ready to deploy...
+            echo "Old code removed - ready to deploy..."
             git clone git@github.com:Sanderei/${{ env.BUILD_REPO }}.git --config core.sshCommand="ssh -i ~/.ssh/discord-bot"
 
       - name: Cleanup directory 🧹
