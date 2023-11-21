@@ -45,8 +45,9 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ env.PUBLIC_PATH }}
             FILE=botproject.jar
@@ -64,8 +65,9 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ env.BUILD_PATH }} && cd ${{ env.BUILD_REPO }}
             rm -rf .git && rm -rf .github && rm -rf .gitignore
