@@ -75,3 +75,5 @@ jobs:
           script: |
             cd ${{ env.BUILD_PATH }} && cd ${{ env.BUILD_REPO }}
             rm -rf .git && rm -rf .github && rm -rf .gitignore
+            cd ${{ env.BUILD_PATH }}
+            rm -rf discord-bot/
